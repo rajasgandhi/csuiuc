@@ -1,0 +1,263 @@
+Node* curr = head_;
+  // Node* last_match_head_prev = nullptr;
+  Node* last_match_head = nullptr;
+  Node* last_match_tail = nullptr;
+
+  while (curr != nullptr) {
+    bool found = true;
+    Node* tmp = curr;
+    const char* sequence_ptr = pattern;
+
+    while (tmp != nullptr && *sequence_ptr != '\0') {
+      if (tmp->data != *sequence_ptr) {
+        found = false;
+        break;
+      }
+      tmp = tmp->next;
+      sequence_ptr++;
+    }
+
+    if (found) {
+      last_match_head = curr;
+    }
+
+    curr = curr->next;
+  }
+
+  int count = 0;
+  Node* current = last_match_head;
+  while (current != nullptr) {
+    if (count == pattern_length) {
+      last_match_tail = current;
+    }
+    count++;
+    current = current->next;
+  }
+
+  if (last_match_head != nullptr && last_match_tail != nullptr) {
+    Node* curr = head_;
+    while (curr->next != nullptr) {
+      if (curr->next == last_match_head) {
+        curr->next = to_splice_in.head_;
+        to_splice_in.tail_ = last_match_tail->next;
+      }
+
+      curr = curr->next;
+    }
+  } else {
+    throw std::runtime_error("Pattern not found.");
+  }
+  /*if (last_match_head != nullptr) {
+    Node* tmp = last_match_head->next;
+    Node* new_head = to_splice_in.head_;
+    last_match_head->next = new_head;
+    while (new_head->next != nullptr) {
+      new_head = new_head->next;
+    }
+    new_head->next = tmp;
+  }*/
+
+
+
+
+
+
+
+
+--------nnnnnn----
+void DNAstrand::SpliceIn(const char* pattern, DNAstrand& to_splice_in) {
+  // traverse through current pattern
+  // add current letter to temp string
+  // if it equals pattern
+  // tmp node = curr node next
+  // set current node next = tosplicein head
+  // set last node of tosplice in equals old curr next
+  if (pattern == nullptr) throw std::runtime_error("pattern is null");
+  if (pattern[0] == '\0') throw std::runtime_error("pattern is empty");
+  if (to_splice_in.head_ == nullptr || &to_splice_in == this) {
+    return;
+  }
+
+  int pattern_length = 0;
+  for (unsigned int i = 0; pattern[i] != '\0'; ++i) {
+    pattern_length++;
+  }
+
+  Node* last_occurence_prev = nullptr;
+  Node* current = head_;
+
+  while (current->next != nullptr) {
+    bool found = true;
+    Node* temp = current;
+
+    for (unsigned int i = 0; pattern[i] != '\0'; ++i) {
+      if (temp->data != pattern[i]) {
+        found = false;
+        break;
+      }
+      temp = temp->next;
+    }
+
+    if (found) {
+      last_occurence_prev = current;
+    }
+
+    current = current->next;
+  }
+
+  if (last_occurence_prev == nullptr)
+    throw std::runtime_error("Pattern not found");
+
+  if (last_occurence_prev == tail_) {
+    last_occurence_prev = tail_;
+  }
+
+  // Node* new_head = to_splice_in.head_;
+
+  current = head_;
+  Node* true_insertion_point = nullptr;
+  while (current->next != nullptr) {
+    if (current->next == last_occurence_prev) {
+      true_insertion_point = current;
+      break;
+    }
+    current = current->next;
+  }
+
+  Node* last_node_pattern = nullptr;
+  if (last_occurence_prev != nullptr) {
+    last_node_pattern = last_occurence_prev;
+    for (int i = 0; i < pattern_length - 1; i++) {
+      last_node_pattern = last_node_pattern->next;
+    }
+  }
+
+  if (true_insertion_point != nullptr) {
+    true_insertion_point->next = to_splice_in.head_;
+    to_splice_in.tail_->next = last_node_pattern->next;
+    last_node_pattern->next = nullptr;
+  } else {
+    head_ = to_splice_in.head_;
+    to_splice_in.tail_->next = last_node_pattern->next;
+    last_node_pattern->next = nullptr;
+  }
+
+  current = last_occurence_prev;
+  while (current != nullptr) {
+    Node* next = current->next;
+    delete current;
+    current = next;
+  }
+
+  current = head_;
+  while (current != nullptr) {
+    if (current->next == nullptr) {
+      tail_ = current;
+      break;
+    }
+    current = current->next;
+  }
+
+  to_splice_in.head_ = nullptr;
+  to_splice_in.tail_ = nullptr;
+
+  /*if (true_insertion_point != nullptr && to_splice_in.head_ != nullptr) {
+    Node* temp = true_insertion_point->next;
+    true_insertion_point->next = to_splice_in.head_;
+
+    // Node* new_head = to_splice_in.head_;
+    //  Traverse to the end of the new linked list
+    while (to_splice_in.head_->next != nullptr) {
+      to_splice_in.head_ = to_splice_in.head_->next;
+    }
+    int count = 0;
+    while (temp != nullptr) {
+      if (count == pattern_length + 1) {
+        // last_match_tail = current;
+        to_splice_in.head_->next = temp;
+        break;
+      }
+      count++;
+      temp = temp->next;
+    }
+  }*/
+}
+-------------nnnnnnn------------------------
+
+
+--------wegweg---------
+  /*Node* last_occurence_prev = nullptr;
+  Node* current = head;
+
+  while (current->next != nullptr) {
+    bool found = true;
+    Node* temp = current;
+
+    for (unsigned int i = 0; sequence[i] != '\0'; ++i) {
+      std::cout << sequence[i] << std::endl;
+      if (temp->data != sequence[i]) {
+        found = false;
+        // std::cout << temp->data << " " << found << std::endl;
+        break;
+      }
+      temp = temp->next;
+    }
+
+    if (found) {
+      last_occurence_prev = current;
+    }
+
+    current = current->next;
+  }
+
+  if (last_occurence_prev == nullptr)
+    throw std::runtime_error("Pattern not found");
+
+  if (last_occurence_prev == tail_) {
+    return tail_;
+  }
+
+  return last_occurence_prev;*/
+  ------------gwegwegwehwe----------
+
+
+
+  ----wegegg23g23g23g32------
+  // if (insertionPoint != nullptr && newHead != nullptr) {
+  //  std::cout << insertionPoint->data << std::endl;
+  if (insertionPoint == head_) {
+    // head_ = newHead;
+    Node* new_tail_next = nullptr;
+    Node* temp = head_;
+    int count = 0;
+    while (temp != nullptr) {
+      if (count == sequenceLength) {
+        new_tail_next = temp;
+        break;
+      }
+
+      temp = temp->next;
+      count++;
+    }
+
+    newTail->next = new_tail_next;
+    head_ = newHead;
+  } else {
+    Node* temp = insertionPoint->next;
+    insertionPoint->next = newHead;
+
+    while (newHead->next != nullptr) {
+      newHead = newHead->next;
+    }
+    int count = 0;
+    while (temp != nullptr) {
+      if (count == sequenceLength) {
+        newHead->next = temp;
+        break;
+      }
+
+      temp = temp->next;
+      count++;
+    }
+  }
+  ----wg-g3-443h34h3434--------
